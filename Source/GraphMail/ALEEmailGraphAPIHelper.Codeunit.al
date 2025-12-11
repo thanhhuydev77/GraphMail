@@ -189,13 +189,12 @@ codeunit 70001 "ALE Email - Graph API Helper"
         RestClient: Codeunit "Rest Client";
         ResponseJson: JsonObject;
         JToken: JsonToken;
-        GraphURLUserTok: Label 'https://graph.microsoft.com/v1.0/users/';
         MessageId: Text;
         MessageJsonText: Text;
         RequestUri: Text;
     begin
         MessageJson.WriteTo(MessageJsonText);
-        RequestUri := GraphURLUserTok + FromEmail + '/sendMail';
+        RequestUri := gGraphURLTok + FromEmail + '/sendMail';
 
         RestClient.Initialize(OauthHeader);
         JToken := RestClient.PostAsJson(RequestUri, MessageJson);
@@ -207,11 +206,10 @@ codeunit 70001 "ALE Email - Graph API Helper"
     local procedure PostAttachment(OauthHeader: Codeunit HttpAuthOAuthClientCredentials; EmailAddress: Text[250]; AttachmentJson: JsonObject; MessageId: Text)
     var
         RestClient: Codeunit "Rest Client";
-        GraphURL2Tok: Label 'https://graph.microsoft.com', locked = true;
-        PostAttachmentUriTxt: Label '/v1.0/users/%1/messages/%2/attachments', Locked = true;
+        PostAttachmentUriTxt: Label '%1/messages/%2/attachments', Locked = true;
         RequestUri: Text;
     begin
-        RequestUri := GraphURL2Tok + StrSubstNo(PostAttachmentUriTxt, EmailAddress, MessageId);
+        RequestUri := gGraphURLTok + StrSubstNo(PostAttachmentUriTxt, EmailAddress, MessageId);
         RestClient.Initialize(OauthHeader);
         RestClient.PostAsJson(RequestUri, AttachmentJson);
     end;
@@ -220,23 +218,21 @@ codeunit 70001 "ALE Email - Graph API Helper"
     var
         RestClient: Codeunit "Rest Client";
         MailHttpContent: Codeunit "Http Content";
-        GraphURLTok: Label 'https://graph.microsoft.com', Locked = true;
         RequestUri: Text;
     begin
         RestClient.Initialize(OauthHeader);
-        RequestUri := GraphURLTok + '/v1.0/users/' + FromEmail + '/messages/' + MessageId + '/send';
+        RequestUri := gGraphURLTok + FromEmail + '/messages/' + MessageId + '/send';
         RestClient.Post(RequestUri, MailHttpContent);
     end;
 
     local procedure SendMailSingleRequest(OauthHeader: Codeunit HttpAuthOAuthClientCredentials; MessageJson: JsonObject; FromEmail: Text)
     var
         RestClient: Codeunit "Rest Client";
-        GraphURLTok: Label 'https://graph.microsoft.com/v1.0/users/';
         MessageJsonText: Text;
         RequestUri: Text;
     begin
         MessageJson.WriteTo(MessageJsonText);
-        RequestUri := GraphURLTok + FromEmail + '/sendMail';
+        RequestUri := gGraphURLTok + FromEmail + '/sendMail';
         RestClient.Initialize(OauthHeader);
         RestClient.PostAsJson(RequestUri, MessageJson);
     end;
@@ -249,12 +245,12 @@ codeunit 70001 "ALE Email - Graph API Helper"
         jtoken: JsonToken;
         AttachmentInStream: Instream;
         FromByte, Range, ToByte, TotalBytes : Integer;
-        GraphURL3Tok: Label 'https://graph.microsoft.com/v1.0/users/';
+
         UploadAttachmentMeUriTxt: Label '/messages/%1/attachments/createUploadSession', Locked = true;
         AttachmentOutStream: OutStream;
         AttachmentContentInBase64, RequestUri, UploadUrl : Text;
     begin
-        RequestUri := GraphURL3Tok + EmailAddress + StrSubstNo(UploadAttachmentMeUriTxt, MessageId);
+        RequestUri := gGraphURLTok + EmailAddress + StrSubstNo(UploadAttachmentMeUriTxt, MessageId);
         RestClient.Initialize(OauthHeader);
         AttachmentContentInBase64 := GetAttachmentContent(AttachmentJson);
 
@@ -394,4 +390,7 @@ codeunit 70001 "ALE Email - Graph API Helper"
         JToken.AsObject().Get('message', JToken);
         ErrorMessage := JToken.AsValue().AsText();
     end;
+
+    var
+        gGraphURLTok: Label 'https://graph.microsoft.com/v1.0/users/';
 }
