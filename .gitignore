@@ -21,10 +21,10 @@ cache_*
 launch.json
 settings.json
 *.xlsx
-*/.vscode/rad.json
-*/.vscode/.altemplates
-*/.vscode/.alcache
-*/.vscode/.snapshots
-*/.vscode/cache_*
-*/.vscode/launch.json
-*/.vscode/settings.json
+.vscode/rad.json
+.vscode/.altemplates
+.vscode/.alcache
+.vscode/.snapshots
+.vscode/cache_*
+.vscode/launch.json
+.vscode/settings.json
