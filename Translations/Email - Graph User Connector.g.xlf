@@ -18,10 +18,10 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table ALE Email - Graph API Account - Field Email Address - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Table 2694306800 - Field 2573777901 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Graph APIEmail Connector</source>
+        <trans-unit id="Table 2694306800 - Field 2796952069 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Graph API Email Connector</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Table ALE Email - Graph API Account - Field Graph APIEmail Connector - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table ALE Email - Graph API Account - Field Graph API Email Connector - Property Caption</note>
         </trans-unit>
         <trans-unit id="Table 2694306800 - Field 3641927271 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>ID</source>
@@ -48,10 +48,10 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method CreateDraftMail - NamedType EnvironmentBlocksErr</note>
         </trans-unit>
-        <trans-unit id="Codeunit 3535967813 - Method 2878842628 - NamedType 251972017" size-unit="char" translate="yes" xml:space="preserve">
+        <trans-unit id="Codeunit 3535967813 - Method 2878842628 - NamedType 526659330" size-unit="char" translate="yes" xml:space="preserve">
           <source>https://graph.microsoft.com/v1.0/users/</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method CreateDraftMail - NamedType GraphURLTxt</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method CreateDraftMail - NamedType GraphURLUserTok</note>
         </trans-unit>
         <trans-unit id="Codeunit 3535967813 - Method 3495062129 - NamedType 1570945537" size-unit="char" translate="yes" xml:space="preserve">
           <source>https://login.microsoftonline.com/</source>
@@ -64,24 +64,24 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method GetAccessTokenByEmailAccount - NamedType ScopeLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3535967813 - Method 2156217742 - NamedType 68286719" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Could not send theEmail message. Try again later.</source>
+          <source>Could not send the Email message. Try again later.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method GetHttpErrorMessageAsText - NamedType SendEmailErr</note>
         </trans-unit>
-        <trans-unit id="Codeunit 3535967813 - Method 2309449115 - NamedType 251972017" size-unit="char" translate="yes" xml:space="preserve">
-          <source>https://graph.microsoft.com</source>
+        <trans-unit id="Codeunit 3535967813 - Method 923052453 - NamedType 1570945537" size-unit="char" translate="yes" xml:space="preserve">
+          <source>https://login.microsoftonline.com/</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method PostAttachment - NamedType GraphURLTxt</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method GetOAuth2HeaderByEmail - NamedType AuthorizeBaseUrlLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3535967813 - Method 923052453 - NamedType 1618117332" size-unit="char" translate="yes" xml:space="preserve">
+          <source>https://graph.microsoft.com/.default</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method GetOAuth2HeaderByEmail - NamedType ScopeLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3535967813 - Method 2309449115 - NamedType 68286719" size-unit="char" translate="yes" xml:space="preserve">
           <source>Could not send theEmail message. Try again later.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method PostAttachment - NamedType SendEmailErr</note>
-        </trans-unit>
-        <trans-unit id="Codeunit 3535967813 - Method 2047943460 - NamedType 251972017" size-unit="char" translate="yes" xml:space="preserve">
-          <source>https://graph.microsoft.com</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method SendDraftMail - NamedType GraphURLTxt</note>
         </trans-unit>
         <trans-unit id="Codeunit 3535967813 - Method 2047943460 - NamedType 68286719" size-unit="char" translate="yes" xml:space="preserve">
           <source>Could not send theEmail message. Try again later.</source>
@@ -93,23 +93,28 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method SendMailSingleRequest - NamedType EnvironmentBlocksErr</note>
         </trans-unit>
-        <trans-unit id="Codeunit 3535967813 - Method 1138507810 - NamedType 251972017" size-unit="char" translate="yes" xml:space="preserve">
+        <trans-unit id="Codeunit 3535967813 - Method 1138507810 - NamedType 1863038657" size-unit="char" translate="yes" xml:space="preserve">
           <source>https://graph.microsoft.com/v1.0/users/</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method SendMailSingleRequest - NamedType GraphURLTxt</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method SendMailSingleRequest - NamedType GraphURLTok</note>
         </trans-unit>
-        <trans-unit id="Codeunit 3535967813 - Method 3075264310 - NamedType 251972017" size-unit="char" translate="yes" xml:space="preserve">
+        <trans-unit id="Codeunit 3535967813 - Method 3075264310 - NamedType 1863038657" size-unit="char" translate="yes" xml:space="preserve">
           <source>https://graph.microsoft.com/v1.0/users/</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method UploadAttachment - NamedType GraphURLTxt</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method UploadAttachment - NamedType GraphURLTok</note>
         </trans-unit>
         <trans-unit id="Codeunit 3535967813 - Method 3075264310 - NamedType 68286719" size-unit="char" translate="yes" xml:space="preserve">
           <source>Could not send theEmail message. Try again later.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method UploadAttachment - NamedType SendEmailErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 3535967813 - Method 3075264310 - NamedType 2760174240" size-unit="char" translate="yes" xml:space="preserve">
+          <source>https://graph.microsoft.com/v1.0/users/</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method UploadAttachment - NamedType GraphURL3Tok</note>
+        </trans-unit>
         <trans-unit id="Codeunit 3535967813 - Method 1074593431 - NamedType 68286719" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Could not send theEmail message. Try again later.</source>
+          <source>Could not send the Email message. Try again later.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method UploadAttachmentRange - NamedType SendEmailErr</note>
         </trans-unit>
@@ -129,7 +134,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Page ALE Graph User Email Account - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 2900161788 - Control 4137051400 - Property 1968111052" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Everyone will sendEmail messages from thisEmail account.</source>
+          <source>Everyone will send email messages from this email address.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page ALE Graph User Email Account - Control New - Property InstructionalText</note>
         </trans-unit>
@@ -144,7 +149,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Page ALE Graph User Email Account - Control Client Secrect - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="Page 2900161788 - Control 90141998 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Specifies the value of theEmail Address field.</source>
+          <source>Specifies the value of the Email Address field.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page ALE Graph User Email Account - Control Email Address - Property ToolTip</note>
         </trans-unit>
@@ -169,7 +174,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Page ALE Graph User Email Account - Action Next - Property Caption</note>
         </trans-unit>
         <trans-unit id="EnumExtension 1486536023 - EnumValue 1923590671 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Enum 1993094577">
-          <source>Graph User</source>
+          <source>Shared Email</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">EnumExtension ALE Email Connector EnumExt - EnumValue Graph User - Property Caption</note>
         </trans-unit>

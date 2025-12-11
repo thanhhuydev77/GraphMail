@@ -17,7 +17,6 @@ codeunit 70000 "ALE Graph User Connector" implements "Email Connector v4", "Defa
 
     procedure MarkAsRead(AccountId: Guid; ExternalMessageId: Text)
     begin
-        EmailGraphAPIHelper.MarkEmailAsRead(AccountId, ExternalMessageId);
     end;
 
     procedure Send(EmailMessage: Codeunit "Email Message"; AccountId: Guid)

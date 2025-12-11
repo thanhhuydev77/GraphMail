@@ -51,39 +51,6 @@ codeunit 70001 "ALE Email - Graph API Helper"
         exit(EmailMessageToJson(EmailMessage, EmailMessageJson))
     end;
 
-    procedure EmailMessageToReplyJson(EmailMessage: Codeunit "Email Message"; ReplyBody: Text; AsHtml: Boolean): JsonObject
-    var
-        Recipients: JsonArray;
-        EmailBody: JsonObject;
-        EmailMessageJson: JsonObject;
-        MessageText: Text;
-    begin
-        EmailBody.add('content', ReplyBody);
-        if AsHtml then
-            EmailBody.add('contentType', 'html')
-        else
-            EmailBody.add('contentType', 'text');
-        EmailMessageJson.Add('body', EmailBody);
-        Recipients := GetEmailRecipients(EmailMessage, Enum::"Email Recipient Type"::"To");
-        if Recipients.Count > 0 then EmailMessageJson.Add('toRecipients', Recipients);
-        Recipients := GetEmailRecipients(EmailMessage, Enum::"Email Recipient Type"::Cc);
-        if Recipients.Count > 0 then EmailMessageJson.Add('ccRecipients', Recipients);
-        Recipients := GetEmailRecipients(EmailMessage, Enum::"Email Recipient Type"::Bcc);
-        if Recipients.Count > 0 then EmailMessageJson.Add('bccRecipients', Recipients);
-        // If message json > max request size, then error as theEmail body is too large.
-        EmailMessageJson.WriteTo(MessageText);
-        if StrLen(MessageText) > MaximumRequestSizeInBytes() then Error(EmailBodyTooLargeErr);
-        AddEmailAttachments(EmailMessage, EmailMessageJson);
-        exit(EmailMessageJson);
-    end;
-
-    procedure EmailMessageToJson(EmailMessage: Codeunit "Email Message"): JsonObject
-    var
-        EmailMessageJson: JsonObject;
-    begin
-        exit(EmailMessageToJson(EmailMessage, EmailMessageJson));
-    end;
-
     procedure AddEmailAttachments(EmailMessage: Codeunit "Email Message"; var MessageJson: JsonObject)
     var
         AttachmentsArray: JsonArray;
@@ -166,10 +133,12 @@ codeunit 70001 "ALE Email - Graph API Helper"
     procedure Send(EmailMessage: Codeunit "Email Message"; AccountId: Guid)
     var
         EmailGraphAPIAccount: Record "ALE Email - Graph API Account";
-        OauthHeader: Dictionary of [Text, SecretText];
+        OauthHeader: Codeunit HttpAuthOAuthClientCredentials;
     begin
         if not EmailGraphAPIAccount.Get(AccountId) then Error(AccountNotFoundErr);
-        OauthHeader := GetAccessTokenByEmailAccount(EmailGraphAPIAccount);
+        // OauthHeader := GetAccessTokenByEmailAccount(EmailGraphAPIAccount);
+        // SendEmail(OauthHeader, EmailMessageToJson(EmailMessage, EmailGraphAPIAccount), EmailGraphAPIAccount."Email Address");
+        OauthHeader := GetOAuth2HeaderByEmail(EmailGraphAPIAccount);
         SendEmail(OauthHeader, EmailMessageToJson(EmailMessage, EmailGraphAPIAccount), EmailGraphAPIAccount."Email Address");
     end;
 
@@ -187,6 +156,18 @@ codeunit 70001 "ALE Email - Graph API Helper"
         OauthHeader := HttpAuthOAuthClientCredentials.GetAuthorizationHeaders();
     end;
 
+    procedure GetOAuth2HeaderByEmail(EmailGraphAPIAccount: Record "ALE Email - Graph API Account") HttpAuthOAuthClientCredentials: Codeunit HttpAuthOAuthClientCredentials
+    var
+        AuthorizeBaseUrlLbl: Label 'https://login.microsoftonline.com/';
+        ScopeLbl: Label 'https://graph.microsoft.com/.default';
+        ListScope: List of [Text];
+        TenantID: Text;
+    begin
+        TenantID := RemoveParenthesis(EmailGraphAPIAccount."Tenant ID".ToText());
+        ListScope.Add(ScopeLbl);
+        HttpAuthOAuthClientCredentials.Initialize(AuthorizeBaseUrlLbl + TenantID, EmailGraphAPIAccount."Client ID", EmailGraphAPIAccount."Client Secrect", ListScope);
+    end;
+
     procedure RemoveParenthesis(pInputTxt: Text): Text
     begin
         pInputTxt := DELCHR(pInputTxt, '=', '{');
@@ -195,6 +176,29 @@ codeunit 70001 "ALE Email - Graph API Helper"
     end;
 
     procedure SendEmail(OauthHeader: Dictionary of [Text, SecretText]; MessageJson: JsonObject; FromEmail: Text[250])
+    var
+        Attachments: JsonArray;
+        Attachment: JsonToken;
+        JToken: JsonToken;
+        MessageId: Text;
+    begin
+        if MessageJson.Contains('message') then
+            SendMailSingleRequest(OauthHeader, MessageJson, FromEmail)
+        else begin
+            MessageJson.Get('attachments', JToken);
+            Attachments := JToken.AsArray();
+            MessageJson.Remove('attachments');
+            MessageId := CreateDraftMail(OauthHeader, MessageJson, FromEmail);
+            foreach Attachment in Attachments do
+                if Attachment.AsObject().Contains('AttachmentItem') then
+                    UploadAttachment(OauthHeader, FromEmail, Attachment.AsObject(), MessageId)
+                else
+                    PostAttachment(OauthHeader, FromEmail, Attachment.AsObject(), MessageId);
+            SendDraftMail(OauthHeader, MessageId, FromEmail);
+        end;
+    end;
+
+    procedure SendEmail(OauthHeader: Codeunit HttpAuthOAuthClientCredentials; MessageJson: JsonObject; FromEmail: Text[250])
     var
         Attachments: JsonArray;
         Attachment: JsonToken;
@@ -228,7 +232,7 @@ codeunit 70001 "ALE Email - Graph API Helper"
         ResponseJson: JsonObject;
         JToken: JsonToken;
         EnvironmentBlocksErr: Label 'The request to sendEmail has been blocked. To resolve the problem, enable outgoing HTTP requests for theEmail - Outlook REST API app on the Extension Management page.';
-        GraphURLTxt: Label 'https://graph.microsoft.com/v1.0/users/';
+        GraphURLTok: Label 'https://graph.microsoft.com/v1.0/users/', Locked = true;
         HttpErrorMessage: Text;
         MessageId: Text;
         MessageJsonText: Text;
@@ -236,7 +240,7 @@ codeunit 70001 "ALE Email - Graph API Helper"
         ResponseJsonText: Text;
     begin
         MessageJson.WriteTo(MessageJsonText);
-        RequestUri := GraphURLTxt + FromEmail + '/sendMail';
+        RequestUri := GraphURLTok + FromEmail + '/sendMail';
         MailHttpRequestMessage.Method('POST');
         MailHttpRequestMessage.SetRequestUri(RequestUri);
         MailHttpRequestMessage.GetHeaders(MailRequestHeaders);
@@ -261,6 +265,26 @@ codeunit 70001 "ALE Email - Graph API Helper"
         exit(MessageId);
     end;
 
+    local procedure CreateDraftMail(OauthHeader: Codeunit HttpAuthOAuthClientCredentials; MessageJson: JsonObject; FromEmail: Text): Text
+    var
+        RestClient: Codeunit "Rest Client";
+        ResponseJson: JsonObject;
+        JToken: JsonToken;
+        GraphURLUserTok: Label 'https://graph.microsoft.com/v1.0/users/';
+        MessageId: Text;
+        MessageJsonText: Text;
+        RequestUri: Text;
+    begin
+        MessageJson.WriteTo(MessageJsonText);
+        RequestUri := GraphURLUserTok + FromEmail + '/sendMail';
+
+        RestClient.Initialize(OauthHeader);
+        JToken := RestClient.PostAsJson(RequestUri, MessageJson);
+        ResponseJson.Get('id', JToken);
+        MessageId := JToken.AsValue().AsText();
+        exit(MessageId);
+    end;
+
     local procedure PostAttachment(OauthHeader: Dictionary of [Text, SecretText]; EmailAddress: Text[250]; AttachmentJson: JsonObject; MessageId: Text)
     var
         AttachmentHttpClient: HttpClient;
@@ -269,14 +293,14 @@ codeunit 70001 "ALE Email - Graph API Helper"
         AttachmentRequestHeaders: HttpHeaders;
         AttachmentHttpRequestMessage: HttpRequestMessage;
         AttachmentHttpResponseMessage: HttpResponseMessage;
-        GraphURLTxt: Label 'https://graph.microsoft.com';
-        PostAttachmentUriTxt: Label '/v1.0/users/%1/messages/%2/attachments', Locked = true;
+        GraphURLTok: Label 'https://graph.microsoft.com', Locked = true;
+        PostAttachmentUri2Txt: Label '/v1.0/users/%1/messages/%2/attachments', Locked = true;
         SendEmailErr: Label 'Could not send theEmail message. Try again later.';
         AttachmentRequestJsonText: Text;
         HttpErrorMessage: Text;
         RequestUri: Text;
     begin
-        RequestUri := GraphURLTxt + StrSubstNo(PostAttachmentUriTxt, EmailAddress, MessageId);
+        RequestUri := GraphURLTok + StrSubstNo(PostAttachmentUri2Txt, EmailAddress, MessageId);
         AttachmentHttpRequestMessage.Method('POST');
         AttachmentHttpRequestMessage.SetRequestUri(RequestUri);
         AttachmentHttpRequestMessage.GetHeaders(AttachmentRequestHeaders);
@@ -287,11 +311,41 @@ codeunit 70001 "ALE Email - Graph API Helper"
         AttachmentContentHeaders.Clear();
         AttachmentContentHeaders.Add('Content-Type', 'application/json');
         AttachmentHttpRequestMessage.Content := AttachmentHttpContent;
-        if not AttachmentHttpClient.Send(AttachmentHttpRequestMessage, AttachmentHttpResponseMessage) then Error(SendEmailErr);
+        if not AttachmentHttpClient.Send(AttachmentHttpRequestMessage, AttachmentHttpResponseMessage) then
+            Error(SendEmailErr);
         if AttachmentHttpResponseMessage.HttpStatusCode <> 201 then begin
             HttpErrorMessage := GetHttpErrorMessageAsText(AttachmentHttpResponseMessage);
             Error(HttpErrorMessage);
         end;
+    end;
+
+    local procedure PostAttachment(OauthHeader: Codeunit HttpAuthOAuthClientCredentials; EmailAddress: Text[250]; AttachmentJson: JsonObject; MessageId: Text)
+    var
+        RestClient: Codeunit "Rest Client";
+        GraphURL2Tok: Label 'https://graph.microsoft.com', locked = true;
+        PostAttachmentUriTxt: Label '/v1.0/users/%1/messages/%2/attachments', Locked = true;
+        RequestUri: Text;
+    begin
+        RequestUri := GraphURL2Tok + StrSubstNo(PostAttachmentUriTxt, EmailAddress, MessageId);
+        RestClient.Initialize(OauthHeader);
+
+        // AttachmentHttpRequestMessage.Method('POST');
+        // AttachmentHttpRequestMessage.SetRequestUri(RequestUri);
+        // AttachmentHttpRequestMessage.GetHeaders(AttachmentRequestHeaders);
+        // AttachmentRequestHeaders.Add('Authorization', OauthHeader.Get('Authorization'));
+        // AttachmentJson.WriteTo(AttachmentRequestJsonText);
+        // AttachmentHttpContent.WriteFrom(AttachmentRequestJsonText);
+        // AttachmentHttpContent.GetHeaders(AttachmentContentHeaders);
+        // AttachmentContentHeaders.Clear();
+        // AttachmentContentHeaders.Add('Content-Type', 'application/json');
+        // AttachmentHttpRequestMessage.Content := AttachmentHttpContent;
+        RestClient.PostAsJson(RequestUri, AttachmentJson);
+        // if not AttachmentHttpClient.Send(AttachmentHttpRequestMessage, AttachmentHttpResponseMessage) then
+        //     Error(SendEmailErr);
+        // if AttachmentHttpResponseMessage.HttpStatusCode <> 201 then begin
+        //     HttpErrorMessage := GetHttpErrorMessageAsText(AttachmentHttpResponseMessage);
+        //     Error(HttpErrorMessage);
+        // end;
     end;
 
     local procedure SendDraftMail(OauthHeader: Dictionary of [Text, SecretText]; MessageId: Text; FromEmail: Text): Text
@@ -302,12 +356,12 @@ codeunit 70001 "ALE Email - Graph API Helper"
         MailRequestHeaders: HttpHeaders;
         MailHttpRequestMessage: HttpRequestMessage;
         MailHttpResponseMessage: HttpResponseMessage;
-        GraphURLTxt: Label 'https://graph.microsoft.com';
+        GraphURL2Tok: Label 'https://graph.microsoft.com', Locked = true;
         SendEmailErr: Label 'Could not send theEmail message. Try again later.';
         HttpErrorMessage: Text;
         RequestUri: Text;
     begin
-        RequestUri := GraphURLTxt + '/v1.0/users/' + FromEmail + '/messages/' + MessageId + '/send';
+        RequestUri := GraphURL2Tok + '/v1.0/users/' + FromEmail + '/messages/' + MessageId + '/send';
         MailHttpRequestMessage.Method('POST');
         MailHttpRequestMessage.SetRequestUri(RequestUri);
         MailHttpRequestMessage.GetHeaders(MailRequestHeaders);
@@ -322,6 +376,18 @@ codeunit 70001 "ALE Email - Graph API Helper"
         end;
     end;
 
+    local procedure SendDraftMail(OauthHeader: Codeunit HttpAuthOAuthClientCredentials; MessageId: Text; FromEmail: Text): Text
+    var
+        RestClient: Codeunit "Rest Client";
+        MailHttpContent: Codeunit "Http Content";
+        GraphURLTok: Label 'https://graph.microsoft.com', Locked = true;
+        RequestUri: Text;
+    begin
+        RestClient.Initialize(OauthHeader);
+        RequestUri := GraphURLTok + '/v1.0/users/' + FromEmail + '/messages/' + MessageId + '/send';
+        RestClient.Post(RequestUri, MailHttpContent);
+    end;
+
     local procedure SendMailSingleRequest(OauthHeader: Dictionary of [Text, SecretText]; MessageJson: JsonObject; FromEmail: Text)
     var
         MailHttpClient: HttpClient;
@@ -331,12 +397,12 @@ codeunit 70001 "ALE Email - Graph API Helper"
         MailHttpRequestMessage: HttpRequestMessage;
         MailHttpResponseMessage: HttpResponseMessage;
         EnvironmentBlocksErr: Label 'The request to sendEmail has been blocked. To resolve the problem, enable outgoing HTTP requests for theEmail - Outlook REST API app on the Extension Management page.';
-        GraphURLTxt: Label 'https://graph.microsoft.com/v1.0/users/';
+        GraphURL4Tok: Label 'https://graph.microsoft.com/v1.0/users/', Locked = true;
         MessageJsonText: Text;
         RequestUri: Text;
     begin
         MessageJson.WriteTo(MessageJsonText);
-        RequestUri := GraphURLTxt + FromEmail + '/sendMail';
+        RequestUri := GraphURL4Tok + FromEmail + '/sendMail';
         MailHttpRequestMessage.Method('POST');
         MailHttpRequestMessage.SetRequestUri(RequestUri);
         MailHttpRequestMessage.GetHeaders(MailRequestHeaders);
@@ -348,6 +414,19 @@ codeunit 70001 "ALE Email - Graph API Helper"
         MailHttpRequestMessage.Content := MailHttpContent;
         if not MailHttpClient.Send(MailHttpRequestMessage, MailHttpResponseMessage) then;
         if MailHttpResponseMessage.IsBlockedByEnvironment() then Error(EnvironmentBlocksErr)
+    end;
+
+    local procedure SendMailSingleRequest(OauthHeader: Codeunit HttpAuthOAuthClientCredentials; MessageJson: JsonObject; FromEmail: Text)
+    var
+        RestClient: Codeunit "Rest Client";
+        GraphURLTok: Label 'https://graph.microsoft.com/v1.0/users/';
+        MessageJsonText: Text;
+        RequestUri: Text;
+    begin
+        MessageJson.WriteTo(MessageJsonText);
+        RequestUri := GraphURLTok + FromEmail + '/sendMail';
+        RestClient.Initialize(OauthHeader);
+        RestClient.PostAsJson(RequestUri, MessageJson);
     end;
 
     local procedure UploadAttachment(OauthHeader: Dictionary of [Text, SecretText]; EmailAddress: Text[250]; AttachmentJson: JsonObject; MessageId: Text)
@@ -362,13 +441,13 @@ codeunit 70001 "ALE Email - Graph API Helper"
         AttachmentHttpResponseMessage: HttpResponseMessage;
         AttachmentInStream: Instream;
         FromByte, Range, ToByte, TotalBytes : Integer;
-        GraphURLTxt: Label 'https://graph.microsoft.com/v1.0/users/';
+        GraphURLTok: Label 'https://graph.microsoft.com/v1.0/users/';
         SendEmailErr: Label 'Could not send theEmail message. Try again later.';
-        UploadAttachmentMeUriTxt: Label '/messages/%1/attachments/createUploadSession', Locked = true;
+        UploadAttachmentMeUri1Txt: Label '/messages/%1/attachments/createUploadSession', Locked = true;
         AttachmentOutStream: OutStream;
         AttachmentContentInBase64, HttpErrorMessage, RequestJsonText, RequestUri, UploadUrl : Text;
     begin
-        RequestUri := GraphURLTxt + EmailAddress + StrSubstNo(UploadAttachmentMeUriTxt, MessageId);
+        RequestUri := GraphURLTok + EmailAddress + StrSubstNo(UploadAttachmentMeUri1Txt, MessageId);
         AttachmentContentInBase64 := GetAttachmentContent(AttachmentJson);
         AttachmentJson.WriteTo(RequestJsonText);
         AttachmentHttpRequestMessage.Method('POST');
@@ -387,6 +466,42 @@ codeunit 70001 "ALE Email - Graph API Helper"
         end
         else
             UploadUrl := GetUploadUrl(AttachmentHttpResponseMessage);
+        FromByte := 0;
+        TotalBytes := GetAttachmentSize(AttachmentJson);
+        Range := MaximumAttachmentSizeInBytes();
+        AttachmentTempBlob.CreateOutStream(AttachmentOutStream);
+        Base64Convert.FromBase64(AttachmentContentInBase64, AttachmentOutStream);
+        AttachmentTempBlob.CreateInStream(AttachmentInStream);
+        while FromByte < TotalBytes do begin
+            ToByte := FromByte + Range - 1;
+            if ToByte >= TotalBytes then begin
+                ToByte := TotalBytes - 1;
+                Range := ToByte - FromByte + 1;
+            end;
+            UploadAttachmentRange(UploadUrl, AttachmentInStream, FromByte, ToByte, TotalBytes, Range);
+            FromByte := ToByte + 1;
+        end;
+    end;
+
+    local procedure UploadAttachment(OauthHeader: Codeunit HttpAuthOAuthClientCredentials; EmailAddress: Text[250]; AttachmentJson: JsonObject; MessageId: Text)
+    var
+        RestClient: Codeunit "Rest Client";
+        Base64Convert: Codeunit "Base64 Convert";
+        AttachmentTempBlob: Codeunit "Temp Blob";
+        jtoken: JsonToken;
+        AttachmentInStream: Instream;
+        FromByte, Range, ToByte, TotalBytes : Integer;
+        GraphURL3Tok: Label 'https://graph.microsoft.com/v1.0/users/';
+        UploadAttachmentMeUriTxt: Label '/messages/%1/attachments/createUploadSession', Locked = true;
+        AttachmentOutStream: OutStream;
+        AttachmentContentInBase64, RequestUri, UploadUrl : Text;
+    begin
+        RequestUri := GraphURL3Tok + EmailAddress + StrSubstNo(UploadAttachmentMeUriTxt, MessageId);
+        RestClient.Initialize(OauthHeader);
+        AttachmentContentInBase64 := GetAttachmentContent(AttachmentJson);
+
+        jtoken := RestClient.PostAsJson(RequestUri, AttachmentJson);
+        UploadUrl := GetUploadUrl(jtoken);
         FromByte := 0;
         TotalBytes := GetAttachmentSize(AttachmentJson);
         Range := MaximumAttachmentSizeInBytes();
@@ -425,6 +540,16 @@ codeunit 70001 "ALE Email - Graph API Helper"
         exit(JToken.AsValue().AsText());
     end;
 
+    local procedure GetUploadUrl(AttachmentHttpResponseMessage: JsonToken): Text
+    var
+        ResponseJson: JsonObject;
+        JToken: JsonToken;
+    begin
+        ResponseJson := AttachmentHttpResponseMessage.AsObject();
+        ResponseJson.Get('uploadUrl', JToken);
+        exit(JToken.AsValue().AsText());
+    end;
+
     local procedure GetAttachmentContent(var AttachmentJson: JsonObject): Text
     var
         JToken: JsonToken;
@@ -450,7 +575,7 @@ codeunit 70001 "ALE Email - Graph API Helper"
         AttachmentRangeInStream: Instream;
         ContentLength: Integer;
         ContentRangeLbl: Label 'bytes %1-%2/%3', Comment = '%1 - From byte, %2 - To byte, %3 - Total bytes', Locked = true;
-        SendEmailErr: Label 'Could not send theEmail message. Try again later.';
+        SendEmailErr: Label 'Could not send the Email message. Try again later.';
         AttachmentOutStream: OutStream;
         HttpErrorMessage: Text;
     begin
@@ -478,11 +603,6 @@ codeunit 70001 "ALE Email - Graph API Helper"
         end;
     end;
 
-    procedure MarkEmailAsRead(AccountId: Guid; ExternalMessageId: Text)
-    var
-    begin
-    end;
-
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Environment Cleanup", 'OnClearCompanyConfig', '', false, false)]
     local procedure ClearCompanyConfigGeneral(CompanyName: Text; SourceEnv: Enum "Environment Type"; DestinationEnv: Enum "Environment Type")
     var
@@ -508,7 +628,7 @@ codeunit 70001 "ALE Email - Graph API Helper"
 
     local procedure GetHttpErrorMessageAsText(MailHttpResponseMessage: HttpResponseMessage): Text
     var
-        SendEmailErr: Label 'Could not send theEmail message. Try again later.';
+        SendEmailErr: Label 'Could not send the Email message. Try again later.';
         ErrorMessage: Text;
     begin
         if not TryGetErrorMessage(MailHttpResponseMessage, ErrorMessage) then ErrorMessage := SendEmailErr;
