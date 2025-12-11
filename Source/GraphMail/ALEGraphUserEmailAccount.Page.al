@@ -85,7 +85,7 @@ page 70000 "ALE Graph User Email Account"
     begin
         if AccountAdded then begin
             Account."Email Address" := Rec."Email Address";
-            Account.Name := Rec.Name;
+            // Account.Name := Rec.Name;
             Account.Connector := Enum::"Email Connector"::"Graph User";
             exit(true);
         end;

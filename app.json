@@ -13,6 +13,9 @@
   "logo": "",
   "application": "27.0.0.0",
   "platform": "27.0.42139.0",
+  "resourceFolders": [
+    "Image"
+  ],
   "resourceExposurePolicy": {
     "allowDebugging": true,
     "allowDownloadingSource": true,

@@ -114,9 +114,14 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method UploadAttachmentRange - NamedType SendEmailErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2652220858 - NamedType 1293915263" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Users sendEmails from other account by Graph API.</source>
+          <source>Users send emails from one shared email.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Graph User Connector - NamedType ConnectorDescriptionTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2652220858 - Method 109129908 - NamedType 492307428" size-unit="char" translate="yes" xml:space="preserve">
+          <source>GraphAPIlogo.png</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Graph User Connector - Method GetLogoAsBase64 - NamedType ImageNameTok</note>
         </trans-unit>
         <trans-unit id="Page 2900161788 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Graph User Email Account</source>
