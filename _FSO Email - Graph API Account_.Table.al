@@ -1,4 +1,4 @@
-table 70000 "FSO Email - Graph API Account"
+table 70000 "Email - Graph API Account"
 {
     DataCaptionFields = "Email Address";
     DataClassification = CustomerContent;
@@ -20,7 +20,7 @@ table 70000 "FSO Email - Graph API Account"
             Caption = 'Account Name';
             DataClassification = CustomerContent;
         }
-        field(70030; "Graph API Email Connector";Enum "Email Connector")
+        field(70030; "Graph APIEmail Connector"; Enum "Email Connector")
         {
             DataClassification = SystemMetadata;
         }

@@ -1,10 +1,10 @@
-page 70000 "FSO Graph User Email Account"
+page 70000 " Graph UserEmail Account"
 {
-    Caption = 'Graph User Email Account';
+    Caption = 'Graph UserEmail Account';
     InsertAllowed = false;
     PageType = NavigatePage;
-    Permissions = tabledata "FSO Email - Graph API Account"=rimd;
-    SourceTable = "FSO Email - Graph API Account";
+    Permissions = tabledata "Email - Graph API Account" = rimd;
+    SourceTable = "Email - Graph API Account";
     SourceTableTemporary = true;
 
     layout
@@ -13,12 +13,12 @@ page 70000 "FSO Graph User Email Account"
         {
             group(New)
             {
-                InstructionalText = 'Everyone will send email messages from this email account.';
+                InstructionalText = 'Everyone will sendEmail messages from thisEmail account.';
 
                 field("Email Address"; Rec."Email Address")
                 {
                     ApplicationArea = all;
-                    ToolTip = 'Specifies the value of the Email Address field.';
+                    ToolTip = 'Specifies the value of theEmail Address field.';
                 }
                 field(Name; Rec.Name)
                 {
@@ -57,12 +57,12 @@ page 70000 "FSO Graph User Email Account"
 
                 trigger OnAction()
                 var
-                    EmailGraphAPIAccount: Record "FSO Email - Graph API Account";
+                    EmailGraphAPIAccount: Record "Email - Graph API Account";
                 begin
                     EmailGraphAPIAccount.Init();
-                    EmailGraphAPIAccount:=Rec;
-                    EmailGraphAPIAccount."Graph API Email Connector":=Enum::"Email Connector"::"Graph User";
-                    AccountAdded:=EmailGraphAPIAccount.Insert();
+                    EmailGraphAPIAccount := Rec;
+                    EmailGraphAPIAccount."Graph APIEmail Connector" := Enum::"Email Connector"::"Graph User";
+                    AccountAdded := EmailGraphAPIAccount.Insert();
                     CurrPage.Close();
                 end;
             }
@@ -70,21 +70,26 @@ page 70000 "FSO Graph User Email Account"
     }
     trigger OnOpenPage()
     begin
-        NewMode:=Rec."Email Address" = '';
+        NewMode := Rec."Email Address" = '';
         if NewMode then begin
             Rec.Init();
-            Rec.ID:=CreateGuid();
+            Rec.ID := CreateGuid();
             Rec.Insert();
-        end end;
-    procedure GetAccount(var Account: Record "Email Account"): Boolean begin
+        end
+    end;
+
+    procedure GetAccount(var Account: Record "Email Account"): Boolean
+    begin
         if AccountAdded then begin
-            Account."Email Address":=Rec."Email Address";
-            Account.Name:=Rec.Name;
-            Account.Connector:=Enum::"Email Connector"::"Graph User";
+            Account."Email Address" := Rec."Email Address";
+            Account.Name := Rec.Name;
+            Account.Connector := Enum::"Email Connector"::"Graph User";
             exit(true);
         end;
         exit(false);
     end;
-    var AccountAdded: Boolean;
-    NewMode: Boolean;
+
+    var
+        AccountAdded: Boolean;
+        NewMode: Boolean;
 }

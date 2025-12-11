@@ -1,9 +1,9 @@
-permissionset 70000 "FSO Permission"
+permissionset 70000 " Permission"
 {
     Assignable = true;
-    Permissions = table "FSO Email - Graph API Account"=X,
-        tabledata "FSO Email - Graph API Account"=RIMD,
-        codeunit "FSO Email - Graph API Helper"=X,
-        codeunit "FSO Graph User Connector"=X,
-        page "FSO Graph User Email Account"=X;
+    Permissions = table "Email - Graph API Account" = X,
+        tabledata "Email - Graph API Account" = RIMD,
+        codeunit "Email - Graph API Helper" = X,
+        codeunit "Graph User Connector" = X,
+        page " Graph UserEmail Account" = X;
 }

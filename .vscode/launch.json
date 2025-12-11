@@ -1,6 +1,19 @@
 {
     "version": "0.2.0",
     "configurations": [
-        // Use Ctrl+Space to trigger IntelliSense and get assistance on the supported configurations for AL development.
+        {
+            "name": "Microsoft cloud sandbox",
+            "request": "launch",
+            "type": "al",
+            "environmentType": "Sandbox",
+            "environmentName": "dev2",
+            "startupObjectId": 22,
+            "startupObjectType": "Page",
+            "tenant": "2a23b967-ac53-4b90-a80b-9c0efc6889fc",
+            "breakOnError": "All",
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true
+        }
     ]
 }

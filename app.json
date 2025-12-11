@@ -5,7 +5,7 @@
   "version": "27.0.0.0",
   "runtime": "16.0",
   "target": "Cloud",
-  "application": "26.0.0.0",
+  "application": "27.0.0.0",
   "platform": "27.0.42139.0",
   "resourceExposurePolicy": {
     "allowDebugging": true,
@@ -14,17 +14,11 @@
     "applyToDevExtension": false
   },
   "features": [
-    "NOIMPLICITWITH"
   ],
   "idRanges": [
     {
       "from": 70000,
       "to": 70100
     }
-  ],
-  "build": {
-    "by": "AL Language Extension,16.2.1869542",
-    "timestamp": "2025-12-09T12:45:18.0256254+00:00",
-    "compilerVersion": "16.2.28.34590"
-  }
+  ]
 }
