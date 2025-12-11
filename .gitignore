@@ -1,4 +1,5 @@
 */*.app
+*.app
 *.flf
 *.bclicense
 *.g.xlf
