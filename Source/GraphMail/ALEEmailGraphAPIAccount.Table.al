@@ -17,13 +17,18 @@ table 70000 "ALE Email - Graph API Account"
         {
             Caption = 'Email Address';
             DataClassification = CustomerContent;
+            trigger OnValidate()
+            begin
+                if (Rec."Email Address" <> '') and (Rec.Name = '') then
+                    Rec.Name := CopyStr(CopyStr(Rec."Email Address", 1, StrPos(Rec."Email Address", '@') - 1), 1, MaxStrLen(Rec.Name));
+            end;
         }
         field(70020; Name; Text[250])
         {
             Caption = 'Account Name';
             DataClassification = CustomerContent;
         }
-        field(70030; "Graph APIEmail Connector"; Enum "Email Connector")
+        field(70030; "Graph API Email Connector"; Enum "Email Connector")
         {
             DataClassification = SystemMetadata;
         }

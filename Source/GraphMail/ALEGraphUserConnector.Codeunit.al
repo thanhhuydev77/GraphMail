@@ -13,7 +13,6 @@ codeunit 70000 "ALE Graph User Connector" implements "Email Connector v4", "Defa
 
     procedure Reply(var EmailMessage: Codeunit "Email Message"; AccountId: Guid)
     begin
-        EmailGraphAPIHelper.ReplyEmail(AccountId, EmailMessage);
     end;
 
     procedure MarkAsRead(AccountId: Guid; ExternalMessageId: Text)
@@ -38,7 +37,7 @@ codeunit 70000 "ALE Graph User Connector" implements "Email Connector v4", "Defa
     var
         EmailOutlookAccount: Record "ALE Email - Graph API Account";
     begin
-        EmailOutlookAccount.SetRange("Graph APIEmail Connector", Enum::"Email Connector"::"Graph User");
+        EmailOutlookAccount.SetRange("Graph API Email Connector", Enum::"Email Connector"::"Graph User");
         if EmailOutlookAccount.FindFirst() then Page.RunModal(Page::"ALE Graph User Email Account", EmailOutlookAccount);
     end;
 

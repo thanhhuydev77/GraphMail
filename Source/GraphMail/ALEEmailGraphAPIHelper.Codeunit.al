@@ -12,13 +12,13 @@ codeunit 70001 "ALE Email - Graph API Helper"
 
     var
         AccountNotFoundErr: Label 'We could not find the account. Typically, this is because the account has been deleted.';
-        EmailBodyTooLargeErr: Label 'TheEmail is too large to send. The size limit is 4 MB, not including attachments.', Locked = true;
+        EmailBodyTooLargeErr: Label 'The Email is too large to send. The size limit is 4 MB, not including attachments.', Locked = true;
 
     procedure GetAccounts(Connector: Enum "Email Connector"; var Accounts: Record "Email Account")
     var
         EmailGraphAPIAccount: Record "ALE Email - Graph API Account";
     begin
-        EmailGraphAPIAccount.SetRange("Graph APIEmail Connector", Connector);
+        EmailGraphAPIAccount.SetRange("Graph API Email Connector", Connector);
         if EmailGraphAPIAccount.FindSet() then
             repeat
                 Accounts."Account Id" := EmailGraphAPIAccount.Id;
@@ -479,11 +479,6 @@ codeunit 70001 "ALE Email - Graph API Helper"
     end;
 
     procedure MarkEmailAsRead(AccountId: Guid; ExternalMessageId: Text)
-    var
-    begin
-    end;
-
-    procedure ReplyEmail(AccountId: Guid; varEmailMessage: Codeunit "Email Message")
     var
     begin
     end;

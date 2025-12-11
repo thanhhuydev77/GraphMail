@@ -1,6 +1,7 @@
 namespace GraphMail;
 
 using System.Email;
+using System.Azure.Identity;
 page 70000 "ALE Graph User Email Account"
 {
     Caption = 'Graph User Email Account';
@@ -16,12 +17,12 @@ page 70000 "ALE Graph User Email Account"
         {
             group(New)
             {
-                InstructionalText = 'Everyone will sendEmail messages from thisEmail account.';
+                InstructionalText = 'Everyone will send email messages from this email address.';
 
                 field("Email Address"; Rec."Email Address")
                 {
                     ApplicationArea = all;
-                    ToolTip = 'Specifies the value of theEmail Address field.';
+                    ToolTip = 'Specifies the value of the Email Address field.';
                 }
                 field(Name; Rec.Name)
                 {
@@ -64,7 +65,7 @@ page 70000 "ALE Graph User Email Account"
                 begin
                     EmailGraphAPIAccount.Init();
                     EmailGraphAPIAccount := Rec;
-                    EmailGraphAPIAccount."Graph APIEmail Connector" := Enum::"Email Connector"::"Graph User";
+                    EmailGraphAPIAccount."Graph API Email Connector" := Enum::"Email Connector"::"Graph User";
                     AccountAdded := EmailGraphAPIAccount.Insert();
                     CurrPage.Close();
                 end;
@@ -72,11 +73,14 @@ page 70000 "ALE Graph User Email Account"
         }
     }
     trigger OnOpenPage()
+    var
+        AzureADTenant: Codeunit "Azure AD Tenant";
     begin
         NewMode := Rec."Email Address" = '';
         if NewMode then begin
             Rec.Init();
             Rec.ID := CreateGuid();
+            Rec."Tenant ID" := AzureADTenant.GetAadTenantId();
             Rec.Insert();
         end
     end;
