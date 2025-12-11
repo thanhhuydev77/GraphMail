@@ -1,4 +1,7 @@
-table 70000 "Email - Graph API Account"
+namespace GraphMail;
+
+using System.Email;
+table 70000 "ALE Email - Graph API Account"
 {
     DataCaptionFields = "Email Address";
     DataClassification = CustomerContent;

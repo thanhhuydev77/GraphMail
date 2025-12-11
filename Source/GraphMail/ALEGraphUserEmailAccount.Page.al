@@ -1,10 +1,13 @@
-page 70000 " Graph UserEmail Account"
+namespace GraphMail;
+
+using System.Email;
+page 70000 "ALE Graph User Email Account"
 {
-    Caption = 'Graph UserEmail Account';
+    Caption = 'Graph User Email Account';
     InsertAllowed = false;
     PageType = NavigatePage;
-    Permissions = tabledata "Email - Graph API Account" = rimd;
-    SourceTable = "Email - Graph API Account";
+    Permissions = tabledata "ALE Email - Graph API Account" = rimd;
+    SourceTable = "ALE Email - Graph API Account";
     SourceTableTemporary = true;
 
     layout
@@ -57,7 +60,7 @@ page 70000 " Graph UserEmail Account"
 
                 trigger OnAction()
                 var
-                    EmailGraphAPIAccount: Record "Email - Graph API Account";
+                    EmailGraphAPIAccount: Record "ALE Email - Graph API Account";
                 begin
                     EmailGraphAPIAccount.Init();
                     EmailGraphAPIAccount := Rec;

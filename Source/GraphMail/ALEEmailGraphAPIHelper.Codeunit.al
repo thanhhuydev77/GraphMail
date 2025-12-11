@@ -1,7 +1,14 @@
-codeunit 70001 "Email - Graph API Helper"
+namespace GraphMail;
+
+using System.Email;
+using System.RestClient;
+using System.Text;
+using System.Utilities;
+using System.DataAdministration;
+codeunit 70001 "ALE Email - Graph API Helper"
 {
     Permissions = tabledata "Email Inbox" = ri,
-        tabledata "Email - Graph API Account" = rimd;
+        tabledata "ALE Email - Graph API Account" = rimd;
 
     var
         AccountNotFoundErr: Label 'We could not find the account. Typically, this is because the account has been deleted.';
@@ -9,7 +16,7 @@ codeunit 70001 "Email - Graph API Helper"
 
     procedure GetAccounts(Connector: Enum "Email Connector"; var Accounts: Record "Email Account")
     var
-        EmailGraphAPIAccount: Record "Email - Graph API Account";
+        EmailGraphAPIAccount: Record "ALE Email - Graph API Account";
     begin
         EmailGraphAPIAccount.SetRange("Graph APIEmail Connector", Connector);
         if EmailGraphAPIAccount.FindSet() then
@@ -24,13 +31,14 @@ codeunit 70001 "Email - Graph API Helper"
 
     procedure DeleteAccount(AccountId: Guid): Boolean
     var
-        OutlookAccount: Record "Email - Graph API Account";
+        OutlookAccount: Record "ALE Email - Graph API Account";
     begin
-        if OutlookAccount.Get(AccountId) then if OutlookAccount.WritePermission() then exit(OutlookAccount.Delete());
+        if OutlookAccount.Get(AccountId) then
+            if OutlookAccount.WritePermission() then exit(OutlookAccount.Delete());
         exit(false);
     end;
 
-    procedure EmailMessageToJson(EmailMessage: Codeunit "Email Message"; Account: Record "Email - Graph API Account"): JsonObject
+    procedure EmailMessageToJson(EmailMessage: Codeunit "Email Message"; Account: Record "ALE Email - Graph API Account"): JsonObject
     var
         EmailAddressJson: JsonObject;
         EmailMessageJson: JsonObject;
@@ -157,7 +165,7 @@ codeunit 70001 "Email - Graph API Helper"
 
     procedure Send(EmailMessage: Codeunit "Email Message"; AccountId: Guid)
     var
-        EmailGraphAPIAccount: Record "Email - Graph API Account";
+        EmailGraphAPIAccount: Record "ALE Email - Graph API Account";
         OauthHeader: Dictionary of [Text, SecretText];
     begin
         if not EmailGraphAPIAccount.Get(AccountId) then Error(AccountNotFoundErr);
@@ -165,7 +173,7 @@ codeunit 70001 "Email - Graph API Helper"
         SendEmail(OauthHeader, EmailMessageToJson(EmailMessage, EmailGraphAPIAccount), EmailGraphAPIAccount."Email Address");
     end;
 
-    procedure GetAccessTokenByEmailAccount(EmailGraphAPIAccount: Record "Email - Graph API Account") OauthHeader: Dictionary of [Text, SecretText]
+    procedure GetAccessTokenByEmailAccount(EmailGraphAPIAccount: Record "ALE Email - Graph API Account") OauthHeader: Dictionary of [Text, SecretText]
     var
         HttpAuthOAuthClientCredentials: Codeunit HttpAuthOAuthClientCredentials;
         AuthorizeBaseUrlLbl: Label 'https://login.microsoftonline.com/';
@@ -200,7 +208,8 @@ codeunit 70001 "Email - Graph API Helper"
             Attachments := JToken.AsArray();
             MessageJson.Remove('attachments');
             MessageId := CreateDraftMail(OauthHeader, MessageJson, FromEmail);
-            foreach Attachment in Attachments do if Attachment.AsObject().Contains('AttachmentItem') then
+            foreach Attachment in Attachments do
+                if Attachment.AsObject().Contains('AttachmentItem') then
                     UploadAttachment(OauthHeader, FromEmail, Attachment.AsObject(), MessageId)
                 else
                     PostAttachment(OauthHeader, FromEmail, Attachment.AsObject(), MessageId);
@@ -237,7 +246,8 @@ codeunit 70001 "Email - Graph API Helper"
         MailContentHeaders.Clear();
         MailContentHeaders.Add('Content-Type', 'application/json');
         MailHttpRequestMessage.Content := MailHttpContent;
-        if not MailHttpClient.Send(MailHttpRequestMessage, MailHttpResponseMessage) then if MailHttpResponseMessage.IsBlockedByEnvironment() then Error(EnvironmentBlocksErr);
+        if not MailHttpClient.Send(MailHttpRequestMessage, MailHttpResponseMessage) then
+            if MailHttpResponseMessage.IsBlockedByEnvironment() then Error(EnvironmentBlocksErr);
         if MailHttpResponseMessage.HttpStatusCode <> 201 then begin
             HttpErrorMessage := GetHttpErrorMessageAsText(MailHttpResponseMessage);
             Error(HttpErrorMessage);
@@ -481,7 +491,7 @@ codeunit 70001 "Email - Graph API Helper"
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Environment Cleanup", 'OnClearCompanyConfig', '', false, false)]
     local procedure ClearCompanyConfigGeneral(CompanyName: Text; SourceEnv: Enum "Environment Type"; DestinationEnv: Enum "Environment Type")
     var
-        EmailGraphAPIAccount: Record "Email - Graph API Account";
+        EmailGraphAPIAccount: Record "ALE Email - Graph API Account";
     begin
         EmailGraphAPIAccount.DeleteAll();
     end;

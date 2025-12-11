@@ -1,0 +1,23 @@
+{
+    "editor.formatOnSave": true,
+    "editor.tabCompletion": "on",
+    "al.enableCodeAnalysis": true,
+    "al.compilationOptions": {
+        "generateReportLayout": true,
+    },
+    "al.codeAnalyzers": [
+        "${CodeCop}",
+        "${UICop}",
+        "${PerTenantExtensionCop}"
+    ],
+    "CRS.DisableDefaultAlSnippets": true,
+    "CRS.NamespacePrefixToIgnore": "",
+    "CRS.ObjectNamePrefix": "ALE",
+    "CRS.OnSaveAlFileAction": "Reorganize",
+    "CRS.ReorganizeByNamespace": true,
+    "CRS.FileNamePattern": "<ObjectNameShort>.<ObjectTypeShortPascalCase>.al",
+    "CRS.ExtensionObjectNamePattern": "<Prefix> <BaseName> <ObjectTypeShortPascalCase>",
+    "CRS.FileNamePatternExtensions": "<ObjectNameShort>.<ObjectTypeShortPascalCase>.al",
+    "CRS.FileNamePatternPageCustomizations": "<ObjectNameShort>.<ObjectTypeShortPascalCase>.al",
+    "CRS.AlSubFolderName": "Source"
+}

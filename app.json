@@ -1,10 +1,16 @@
 {
   "id": "1ea9c0fe-b21f-4b02-91a8-778214989e09",
   "name": "Email - Graph User Connector",
-  "publisher": "FPT-SOFTWARE CO. LTD.",
+  "publisher": "Alex",
   "version": "27.0.0.0",
   "runtime": "16.0",
   "target": "Cloud",
+  "brief": "Graph Mail",
+  "description": "Graph Mail",
+  "url": "https://www.google.com",
+  "EULA": "",
+  "help": "",
+  "logo": "",
   "application": "27.0.0.0",
   "platform": "27.0.42139.0",
   "resourceExposurePolicy": {
@@ -13,7 +19,9 @@
     "includeSourceInSymbolFile": true,
     "applyToDevExtension": false
   },
+  "applicationInsightsConnectionString": "",
   "features": [
+    "TranslationFile"
   ],
   "idRanges": [
     {
