@@ -15,6 +15,7 @@ The connector authenticates using OAuth 2.0 client credentials, ensuring a secur
 - **Standard Interface Implementation**: Implements the standard `Email Connector v4` interface, ensuring seamless integration with the Business Central email framework.
 
 ## Code Flow (Sending an Email)
+
 <img width="1420" height="810" alt="image" src="https://github.com/user-attachments/assets/1aa931de-5c1c-41bd-b786-69d70ed8d80e" />
 
 ## Setup and Configuration
