@@ -39,7 +39,7 @@ page 70000 "ALE Graph User Email Account"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Client ID field.';
                 }
-                field("Client Secrect"; Rec."Client Secrect")
+                field("Client Secrect"; Rec."Client Secret")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Client Secrect field.';
@@ -89,7 +89,7 @@ page 70000 "ALE Graph User Email Account"
     begin
         if AccountAdded then begin
             Account."Email Address" := Rec."Email Address";
-            // Account.Name := Rec.Name;
+            Account.Name := Rec.Name;
             Account.Connector := Enum::"Email Connector"::"Graph User";
             exit(true);
         end;

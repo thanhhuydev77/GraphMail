@@ -8,10 +8,10 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table ALE Email - Graph API Account - Field Client ID - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Table 2694306800 - Field 1994257448 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Client Secrect</source>
+        <trans-unit id="Table 2694306800 - Field 2529110793 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Client Secret</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Table ALE Email - Graph API Account - Field Client Secrect - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table ALE Email - Graph API Account - Field Client Secret - Property Caption</note>
         </trans-unit>
         <trans-unit id="Table 2694306800 - Field 90141998 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Email Address</source>
@@ -43,26 +43,6 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - NamedType AccountNotFoundErr</note>
         </trans-unit>
-        <trans-unit id="Codeunit 3535967813 - Method 2878842628 - NamedType 3949230830" size-unit="char" translate="yes" xml:space="preserve">
-          <source>The request to sendEmail has been blocked. To resolve the problem, enable outgoing HTTP requests for theEmail - Outlook REST API app on the Extension Management page.</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method CreateDraftMail - NamedType EnvironmentBlocksErr</note>
-        </trans-unit>
-        <trans-unit id="Codeunit 3535967813 - Method 2878842628 - NamedType 526659330" size-unit="char" translate="yes" xml:space="preserve">
-          <source>https://graph.microsoft.com/v1.0/users/</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method CreateDraftMail - NamedType GraphURLUserTok</note>
-        </trans-unit>
-        <trans-unit id="Codeunit 3535967813 - Method 3495062129 - NamedType 1570945537" size-unit="char" translate="yes" xml:space="preserve">
-          <source>https://login.microsoftonline.com/</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method GetAccessTokenByEmailAccount - NamedType AuthorizeBaseUrlLbl</note>
-        </trans-unit>
-        <trans-unit id="Codeunit 3535967813 - Method 3495062129 - NamedType 1618117332" size-unit="char" translate="yes" xml:space="preserve">
-          <source>https://graph.microsoft.com/.default</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method GetAccessTokenByEmailAccount - NamedType ScopeLbl</note>
-        </trans-unit>
         <trans-unit id="Codeunit 3535967813 - Method 2156217742 - NamedType 68286719" size-unit="char" translate="yes" xml:space="preserve">
           <source>Could not send the Email message. Try again later.</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -77,41 +57,6 @@
           <source>https://graph.microsoft.com/.default</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method GetOAuth2HeaderByEmail - NamedType ScopeLbl</note>
-        </trans-unit>
-        <trans-unit id="Codeunit 3535967813 - Method 2309449115 - NamedType 68286719" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Could not send theEmail message. Try again later.</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method PostAttachment - NamedType SendEmailErr</note>
-        </trans-unit>
-        <trans-unit id="Codeunit 3535967813 - Method 2047943460 - NamedType 68286719" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Could not send theEmail message. Try again later.</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method SendDraftMail - NamedType SendEmailErr</note>
-        </trans-unit>
-        <trans-unit id="Codeunit 3535967813 - Method 1138507810 - NamedType 3949230830" size-unit="char" translate="yes" xml:space="preserve">
-          <source>The request to sendEmail has been blocked. To resolve the problem, enable outgoing HTTP requests for theEmail - Outlook REST API app on the Extension Management page.</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method SendMailSingleRequest - NamedType EnvironmentBlocksErr</note>
-        </trans-unit>
-        <trans-unit id="Codeunit 3535967813 - Method 1138507810 - NamedType 1863038657" size-unit="char" translate="yes" xml:space="preserve">
-          <source>https://graph.microsoft.com/v1.0/users/</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method SendMailSingleRequest - NamedType GraphURLTok</note>
-        </trans-unit>
-        <trans-unit id="Codeunit 3535967813 - Method 3075264310 - NamedType 1863038657" size-unit="char" translate="yes" xml:space="preserve">
-          <source>https://graph.microsoft.com/v1.0/users/</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method UploadAttachment - NamedType GraphURLTok</note>
-        </trans-unit>
-        <trans-unit id="Codeunit 3535967813 - Method 3075264310 - NamedType 68286719" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Could not send theEmail message. Try again later.</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method UploadAttachment - NamedType SendEmailErr</note>
-        </trans-unit>
-        <trans-unit id="Codeunit 3535967813 - Method 3075264310 - NamedType 2760174240" size-unit="char" translate="yes" xml:space="preserve">
-          <source>https://graph.microsoft.com/v1.0/users/</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ALE Email - Graph API Helper - Method UploadAttachment - NamedType GraphURL3Tok</note>
         </trans-unit>
         <trans-unit id="Codeunit 3535967813 - Method 1074593431 - NamedType 68286719" size-unit="char" translate="yes" xml:space="preserve">
           <source>Could not send the Email message. Try again later.</source>

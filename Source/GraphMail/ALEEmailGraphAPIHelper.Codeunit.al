@@ -13,6 +13,7 @@ codeunit 70001 "ALE Email - Graph API Helper"
     var
         AccountNotFoundErr: Label 'We could not find the account. Typically, this is because the account has been deleted.';
         EmailBodyTooLargeErr: Label 'The Email is too large to send. The size limit is 4 MB, not including attachments.', Locked = true;
+        gGraphURLTok: Label 'https://graph.microsoft.com/v1.0/users/', Locked = true;
 
     procedure GetAccounts(Connector: Enum "Email Connector"; var Accounts: Record "Email Account")
     var
@@ -151,7 +152,7 @@ codeunit 70001 "ALE Email - Graph API Helper"
     begin
         TenantID := RemoveParenthesis(EmailGraphAPIAccount."Tenant ID".ToText());
         ListScope.Add(ScopeLbl);
-        HttpAuthOAuthClientCredentials.Initialize(AuthorizeBaseUrlLbl + TenantID, EmailGraphAPIAccount."Client ID", EmailGraphAPIAccount."Client Secrect", ListScope);
+        HttpAuthOAuthClientCredentials.Initialize(AuthorizeBaseUrlLbl + TenantID, EmailGraphAPIAccount."Client ID", EmailGraphAPIAccount."Client Secret", ListScope);
     end;
 
     procedure RemoveParenthesis(pInputTxt: Text): Text
@@ -390,7 +391,4 @@ codeunit 70001 "ALE Email - Graph API Helper"
         JToken.AsObject().Get('message', JToken);
         ErrorMessage := JToken.AsValue().AsText();
     end;
-
-    var
-        gGraphURLTok: Label 'https://graph.microsoft.com/v1.0/users/';
 }

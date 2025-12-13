@@ -42,9 +42,9 @@ table 70000 "ALE Email - Graph API Account"
             Caption = 'Client ID';
             DataClassification = CustomerContent;
         }
-        field(70060; "Client Secrect"; Text[250])
+        field(70060; "Client Secret"; Text[250])
         {
-            Caption = 'Client Secrect';
+            Caption = 'Client Secret';
             DataClassification = CustomerContent;
             extendedDatatype = Masked;
         }
